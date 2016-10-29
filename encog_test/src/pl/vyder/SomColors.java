@@ -41,6 +41,20 @@ import org.encog.neural.som.training.basic.neighborhood.NeighborhoodRBF;
  *
  */
 public class SomColors extends JFrame implements Runnable {
+	
+	public static double SOM_INPUT[][] = { 
+			{ -1.0, -1.0, 1.0, 1.0 }, 
+			{ 1.0, 1.0, -1.0, -1.0 },
+			{ -1.0, -1.0, 1.0, -1.0 }, 
+			{ 1.0, 1.0, -1.0, 1.0 },
+			{ -1.0, -1.0, -1.0, -1.0 },
+			{ -1.2, -0.67, 0.9, 0.8 },
+			{ 1.0, 1.0, -1.0, 1.0 },
+			{ -1.0, -1.0, -1.0, -1.0 },
+			{ -1.2, -0.67, 0.9, 0.8 },
+			{ 0.0, 0.0, 0.0, 0.0},
+			{ 1.0, -1.0, -1.0, 1.0 }
+			};
 
 	/**
 	 * 
@@ -57,8 +71,7 @@ public class SomColors extends JFrame implements Runnable {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.network = createNetwork();
 		this.getContentPane().add(map = new MapPanel(this));
-		this.gaussian = new NeighborhoodRBF(RBFEnum.Gaussian,MapPanel.WIDTH,
-				MapPanel.HEIGHT);
+		this.gaussian = new NeighborhoodRBF(RBFEnum.Gaussian, MapPanel.WIDTH, MapPanel.HEIGHT);
 		this.train = new BasicTrainSOM(this.network, 0.01, null, gaussian);
 		train.setForceWinner(false);
 		this.thread = new Thread(this);
@@ -70,7 +83,7 @@ public class SomColors extends JFrame implements Runnable {
 	}
 
 	private SOM createNetwork() {
-		SOM result = new SOM(3,MapPanel.WIDTH * MapPanel.HEIGHT);
+		SOM result = new SOM(4, MapPanel.WIDTH * MapPanel.HEIGHT);
 		result.reset();
 		return result;
 	}
@@ -83,15 +96,18 @@ public class SomColors extends JFrame implements Runnable {
 	public void run() {
 
 		List<MLData> samples = new ArrayList<MLData>();
-		for (int i = 0; i < 3; i++) {
-			MLData data = new BasicMLData(3);
-			data.setData(0, RangeRandomizer.randomize(-1, 1));
-			data.setData(1, RangeRandomizer.randomize(-1, 1));
-			data.setData(2, RangeRandomizer.randomize(-1, 1));
+		for (int i = 0; i < SOM_INPUT.length; i++) {
+//			MLData data = new BasicMLData(4);
+//			data.setData(0, RangeRandomizer.randomize(-1, 1));
+//			data.setData(1, RangeRandomizer.randomize(-1, 1));
+//			data.setData(2, RangeRandomizer.randomize(-1, 1));
+//			data.setData(3, RangeRandomizer.randomize(-1, 1));
+			MLData data = new BasicMLData(SOM_INPUT[i]);
+
 			samples.add(data);
 		}
 
-		this.train.setAutoDecay(1000, 0.8, 0.003, 30, 5);
+		this.train.setAutoDecay(1000, 0.8, 0.003, 30, 3);
 
 		for (int i = 0; i < 1000; i++) {
 			int idx = (int) (Math.random() * samples.size());
