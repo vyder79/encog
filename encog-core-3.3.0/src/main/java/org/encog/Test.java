@@ -31,7 +31,7 @@ public class Test {
 		double min=0;
 		double max=0;
 		
-		for(int i=0;i<100000;i++) {
+		for(int i=0;i<100000000;i++) {
 			double s = r.nextGaussian();
 			min = Math.min(min, s);
 			max = Math.max(max, s);
