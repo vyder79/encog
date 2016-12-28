@@ -23,6 +23,7 @@
  */
 package pl.vyder;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,17 +44,36 @@ import org.encog.neural.som.training.basic.neighborhood.NeighborhoodRBF;
 public class SomColors extends JFrame implements Runnable {
 	
 	public static double SOM_INPUT[][] = { 
-			{ -1.0, -1.0, 1.0, 1.0 }, 
-			{ 1.0, 1.0, -1.0, -1.0 },
-			{ -1.0, -1.0, 1.0, -1.0 }, 
+//			{ -1.0, -0.5, 0.5, 1.0 }, 
+//			{ 0.5, 1.0, -1.0, -0.5 },
+//			{ -1.0, 1.0, 0.5, -0.5 }, 
+//			{ 1.0, 1.0, -1.0, 1.0 },
+//			{ -1.0, -1.0, -1.0, -1.0 },
+//			{ -1.2, -0.67, 0.9, 0.8 },
 			{ 1.0, 1.0, -1.0, 1.0 },
-			{ -1.0, -1.0, -1.0, -1.0 },
-			{ -1.2, -0.67, 0.9, 0.8 },
-			{ 1.0, 1.0, -1.0, 1.0 },
-			{ -1.0, -1.0, -1.0, -1.0 },
+			{ -1.0, -1.0, -1.0, -0.5 },
 			{ -1.2, -0.67, 0.9, 0.8 },
 			{ 0.0, 0.0, 0.0, 0.0},
 			{ 1.0, -1.0, -1.0, 1.0 }
+//			randomInputData(),
+//			randomInputData(),
+//			randomInputData(),
+//			randomInputData(),
+//			randomInputData()
+			};
+	
+	public static double SOM_VERIFY[][] = { 
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData(),
+			randomInputData()
 			};
 
 	/**
@@ -67,7 +87,7 @@ public class SomColors extends JFrame implements Runnable {
 	private NeighborhoodRBF gaussian;
 
 	public SomColors() {
-		this.setSize(640, 480);
+		this.setSize(1040, 1060);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.network = createNetwork();
 		this.getContentPane().add(map = new MapPanel(this));
@@ -83,7 +103,7 @@ public class SomColors extends JFrame implements Runnable {
 	}
 
 	private SOM createNetwork() {
-		SOM result = new SOM(4, MapPanel.WIDTH * MapPanel.HEIGHT);
+		SOM result = new SOM(SOM_INPUT[0].length, MapPanel.WIDTH * MapPanel.HEIGHT);
 		result.reset();
 		return result;
 	}
@@ -107,9 +127,9 @@ public class SomColors extends JFrame implements Runnable {
 			samples.add(data);
 		}
 
-		this.train.setAutoDecay(1000, 0.8, 0.003, 30, 3);
+		this.train.setAutoDecay(2000, 0.9, 0.002, 40, 2);
 
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 2000; i++) {
 			int idx = (int) (Math.random() * samples.size());
 			MLData c = samples.get(idx);
 
@@ -118,5 +138,28 @@ public class SomColors extends JFrame implements Runnable {
 			this.map.repaint();
 			System.out.println("Iteration " + i + "," + this.train.toString());
 		}
+		
+		/* show centers of winners neurons */
+		for (int i = 0; i < SOM_INPUT.length; i++) {
+			int winnerNumber = network.classify(new BasicMLData(SOM_INPUT[i]));
+			System.out.println("Pattern "+ i +" winner: " + winnerNumber);
+			this.map.paintSelected(this.map.getGraphics(), winnerNumber, new Color(0, 111, 0));
+		}
+		
+		/* show where are randomized vectors at SOM trained map */
+		for (int i = 0; i < SOM_VERIFY.length; i++) {
+			int winnerNumber = network.classify(new BasicMLData(SOM_VERIFY[i]));
+			System.out.println("Verifying Pattern "+ i +" winner: " + winnerNumber);
+			this.map.paintSelected(this.map.getGraphics(), winnerNumber, new Color(0, 255, 0));
+		}
+	}
+	
+	private static double[] randomInputData() {
+		double[] data = new double[4];
+		data[0] = RangeRandomizer.randomize(-1, 1);
+		data[1] = RangeRandomizer.randomize(-1, 1);
+		data[2] = RangeRandomizer.randomize(-1, 1);
+		data[3] = RangeRandomizer.randomize(-1, 1);
+		return data;
 	}
 }

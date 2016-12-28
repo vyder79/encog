@@ -31,24 +31,21 @@ import javax.swing.JPanel;
 import org.encog.mathutil.matrices.Matrix;
 
 public class MapPanel extends JPanel {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 7528474872067939033L;
-	public static final int CELL_SIZE = 8;
+	public static final int CELL_SIZE = 20;
 	public static final int WIDTH = 50;
 	public static final int HEIGHT = 50;
+	
+	public static int BASE_COLOR = 255;
 
 	private Matrix weights;
 	
-	public MapPanel(SomColors som)
-	{
+	public MapPanel(SomColors som) {
 		this.weights = som.getNetwork().getWeights();
 	}
 	
-	private int convertColor(double d)
-	{
+	private int convertColor(double d) {
 		//System.out.println(d);
 		double result = 128*d;
 		result+=128;
@@ -58,12 +55,9 @@ public class MapPanel extends JPanel {
 	}
 	
 	@Override
-	public void paint(Graphics g)
-	{
-		for(int y = 0; y< HEIGHT; y++)
-		{
-			for(int x = 0; x< WIDTH; x++)
-			{
+	public void paint(Graphics g) {
+		for(int y = 0; y< HEIGHT; y++) {
+			for(int x = 0; x< WIDTH; x++) {
 				int index = (y*WIDTH)+x;
 				int red = convertColor(weights.get(index,0));
 				int green = convertColor(weights.get(index,1));
@@ -73,4 +67,19 @@ public class MapPanel extends JPanel {
 			}
 		}
 	}	
+	
+	/**
+	 * @param g - Graphics obj
+	 * @param selected - number of neuron to be painted
+	 * @param color - Color obj to be used to colorize the given neuron
+	 */
+	public void paintSelected(Graphics g, int selected, Color color) {
+		if (color != null) {
+			g.setColor(color);
+		} else {
+			BASE_COLOR -= 15;
+			g.setColor(new Color(BASE_COLOR,BASE_COLOR,BASE_COLOR));
+		}
+		g.fillRect((selected%WIDTH)*CELL_SIZE, (selected/HEIGHT)*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+	}
 }
