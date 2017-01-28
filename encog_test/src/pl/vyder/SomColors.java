@@ -87,7 +87,7 @@ public class SomColors extends JFrame implements Runnable {
 	private NeighborhoodRBF gaussian;
 
 	public SomColors() {
-		this.setSize(1040, 1060);
+		this.setSize(540, 560);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.network = createNetwork();
 		this.getContentPane().add(map = new MapPanel(this));
@@ -127,7 +127,7 @@ public class SomColors extends JFrame implements Runnable {
 			samples.add(data);
 		}
 
-		this.train.setAutoDecay(2000, 0.9, 0.002, 40, 2);
+		this.train.setAutoDecay(2000, 0.9, 0.002, 10, 2);
 
 		for (int i = 0; i < 2000; i++) {
 			int idx = (int) (Math.random() * samples.size());

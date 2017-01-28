@@ -33,7 +33,7 @@ import org.encog.mathutil.matrices.Matrix;
 public class MapPanel extends JPanel {
 
 	private static final long serialVersionUID = 7528474872067939033L;
-	public static final int CELL_SIZE = 20;
+	public static final int CELL_SIZE = 10;
 	public static final int WIDTH = 50;
 	public static final int HEIGHT = 50;
 	
